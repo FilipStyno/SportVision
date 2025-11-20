@@ -4,7 +4,7 @@
 
 
 <p align="center">
-  <img src="assets/pose.png" width="600" alt="Ukázka aplikace">
+  <img src="/assets/pose.png" width="600" alt="Ukázka aplikace">
 </p>
 
 ##  Cíl projektu
@@ -49,7 +49,7 @@ Odkaz na hardware:
 **Kria KV260 Vision AI Starter Kit**  
 https://www.amd.com/en/products/development-tools/kria/kv260
 
-<img src="assets/kria.jpg" width="300" align="left" alt="Kria KV260">
+<img src="/assets/kria.jpg" width="300" align="left" alt="Kria KV260">
 
 <br clear="left" />
 
