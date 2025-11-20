@@ -65,5 +65,5 @@ target_height = 720
 
 Vraťte se zpět na hlavní dokument projektu:
 
-[← Zpět na README](../README.md)
+[← Zpět na hlavní stránku projektu](../README)
 
