@@ -16,15 +16,11 @@ pip install opencv-python mediapipe
 
 ---
 
-##  2. Příprava videa
+## 2. Příprava videa
 
-Do hlavní složky projektu vložte váš video soubor, např.:
+V projektu je nyní přiloženo **ukázkové video**: [sprint.mp4](assets/sprint.mp4)
 
-```
-sprint.mp4
-```
-
-Pokud použijete jiné jméno, upravte cestu ve skriptu `mp.py`:
+Pokud chcete použít vlastní video, vložte jej do libovolné složky a upravte cestu ve skriptu `mp.py`:
 
 ```python
 video_path = "sprint.mp4"
