@@ -20,7 +20,7 @@ Projekt je navržen tak, aby:
 
 ## 📑 Dokumenty
 
-* [How to Run — MediaPipe](docs/how_to_run.md)
+* [How to Run — MediaPipe](how_to_run.md)
 
 *(Další dokumenty budou přidány později.)*
 
