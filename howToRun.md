@@ -65,5 +65,6 @@ target_height = 720
 
 Vraťte se zpět na hlavní dokument projektu:
 
-[← Zpět na hlavní stránku projektu](../README)
+[← Zpět na hlavní stránku projektu](https://github.com/FilipStyno/SportVision)
+
 
