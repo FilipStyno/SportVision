@@ -1,5 +1,3 @@
-MediaPipe Pose Tracking
-
 Tento dokument popisuje, jak spustit **MediaPipe** model pro analýzu pohybu ve videu. Počítá se s tím, že používáte soubor `mp.py` umístěný v hlavním adresáři projektu.
 
 ---
@@ -18,11 +16,7 @@ pip install opencv-python mediapipe
 
 ## 2. Příprava videa
 
-<<<<<<< HEAD:docs/how_to_run.md
 V projektu je nyní přiloženo **ukázkové video**: [sprint.mp4](/assets/)
-=======
-V projektu je nyní přiloženo **ukázkové video**: [sprint.mp4](assets/sprint.mp4)
->>>>>>> 07d82a405a8860c5128ca9abeb407f63724c9c53:docs/howToRun.md
 
 Pokud chcete použít vlastní video, vložte jej do libovolné složky a upravte cestu ve skriptu `mp.py`:
 
