@@ -1,10 +1,9 @@
-# SportVision — jednoduchá analýza sportu z videa
+# SportVision — Analýza sprintu a měření rychlosti z videa
 
-<p align="center"><em>Krátký školní projekt zaměřený na analýzu pohybu sportovce z běžného videa.</em></p>
-
+<p align="center"><em>Projekt zaměřený na automatické měření času a rychlosti běžce pomocí počítačového vidění.</em></p>
 
 <p align="center">
-  <img src="/assets/pose.png" width="600" alt="Ukázka aplikace">
+  <img src="/assets/pose.png" width="600" alt="Ukázka analýzy sprintu">
 </p>
 
 ##  Cíl projektu
@@ -12,42 +11,45 @@ Jednoduše a rychle **změřit rychlost běžce** mezi dvěma body pomocí videa
 Budoucím rozšířením může být **detekce kloubních úhlů** (např. dorsiflexe kotníku).
 
 Projekt je navržen tak, aby:
-- šel spustit na běžném notebooku
+- šel spustit na běžném notebooku/počítači
 - nevyžadoval velké množství výpočetního výkonu
 - byl použitelný i pro trenéry/atlety
 
 ---
 
-## 📑 Dokumenty
+## Dokumenty
 
 * [How to Run — MediaPipe](how_to_run.md)
 
-*(Další dokumenty budou přidány později.)*
+---
+
+## Funkce
+- **Virtuální brány:** Uživatel definuje start a cíl.
+- **Detekce běžce:** Využití MediaPipe Pose pro sledování těžiště (kyčlí).
+- **Měření "Zprava do leva" i naopak:** Flexibilní nastavení směru běhu.
+- **Čistá vizualizace:** Filtrace nepotřebných bodů (obličej, prsty) pro přehlednější zobrazení techniky.
 
 ---
 
-##  Funkce
-- Nahrání videa (`.mp4`)
-- Detekce postavy (pose estimation)
-- Výpočet základních metrik (např. rychlost)
-- Jednoduchý **overlay** v obrazu
-- Export dat do `.csv`
-
----
-
-##  Použité technologie
-- **Python 3.13** *(verze může být upravena podle modelů)*
+## Použité technologie
+- **Python: verze 3.9 - 3.12**, testoval jsem s 3.10
 - **OpenCV** — práce s videem
-- **MediaPipe / OpenPose / YOLOv11** — testované modely pro detekci postavy
+- **MediaPipe Pose** — Robustní model pro detekci kloubů běžce.
 
 ---
 
-##  Aktuální stav projektu
-- Proběhla **analýza modelů pro pose estimation**.
-  - Hodnotil jsem zejména **přesnost detekce** a **náročnost na hardware**.
-- **MediaPipe** se ukázal jako nejvhodnější kompromis mezi rychlostí a přesností.
-- Teď se zaměřuji na **měření rychlosti atleta na předem známé vzdálenosti**.
-  - Sbírám videa s přesně definovanými body / značkami v prostoru.
+## Aktuální stav projektu
+- **Implementováno měření rychlosti:**
+  - Program úspěšně měří čas a průměrnou rychlost v definovaném úseku (sample video je 10m).
+- **Optimalizace výkonu:**
+  - Možnost přepínání `model_complexity` (1 pro rychlost / 2 pro přesnost).
+  - Vyloučení landmarků hlavy a prstů pro čistší vizuál.
+
+<p align="center">
+  <img src="/assets/demo.jpg" width="400" alt="Testovací prostředí - zimní stadion">
+  <br>
+  <em>Testovací prostředí: úsek 10m.</em>
+</p>
 
 ###  Hardware experimenty
 V rámci praxe zkouším akceleraci pomocí platformy **Kria KV260**  
@@ -64,5 +66,5 @@ https://www.amd.com/en/products/development-tools/kria/kv260
 
 ---
 
-##  Autor
+## Autor
 **Filip Hřivňacký**
