@@ -79,10 +79,32 @@ MediaPipe nabízí tři úrovně složitosti modelu (`model_complexity`):
 
 Skript je primárně nastaven pro běh **Zprava (větší X) do Leva (menší X)**.
 
-Pokud běžíte opačně (**Zleva doprava**), je nutné v kódu otočit logiku podmínek:
+Pokud běžíte opačně (**Zleva doprava**), nahraďte v kódu celou sekci logiky tímto blokem:
 
-1. Start bude mít menší X než Cíl.
-2. V podmínkách `if runner_x_px ...` změňte znaménka `<=` na `>=` a naopak.
+```python
+# --- LOGIKA MĚŘENÍ (BĚH ZLEVA -> DOPRAVA) ---
+if not finished:
+    # START
+    if not is_running:
+        if runner_x >= START_LINE_X and runner_x < FINISH_LINE_X:
+            is_running = True
+            start_time = video_time
+            print(f"--> START v čase {video_time:.2f} s")
+
+    # CÍL
+    elif is_running and runner_x >= FINISH_LINE_X:
+        is_running = False
+        finished = True
+        end_time = video_time
+
+        final_time = end_time - start_time
+        if final_time > 0:
+            speed_ms = REAL_DISTANCE_METERS / final_time
+            speed_kmh = speed_ms * 3.6
+        print(f"--> CÍL! Čas: {final_time:.2f} s, Rychlost: {speed_kmh:.1f} km/h")
+
+```
+
 
 ---
 
