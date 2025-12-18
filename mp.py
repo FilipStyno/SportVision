@@ -52,7 +52,6 @@ def main():
     speed_kmh = 0
 
     # Spuštění "mozku" pro detekci pohybu
-    # model_complexity=1 je zlatá střední cesta (rychlost vs. přesnost)
     with mp_pose.Pose(
             static_image_mode=False,
             model_complexity=1,
@@ -67,19 +66,15 @@ def main():
             # --- OVLÁDÁNÍ KLÁVESNICE ---
             key = cv2.waitKey(1) & 0xFF
 
-            # Ukončení klávesou 'q'
             if key == ord('q'):
                 break
-
-            # Pauza klávesou SPACE
-            elif key == 32:
+            elif key == 32: # Space
                 paused = not paused
                 if paused:
                     print("--- PAUZA ---")
                 else:
                     print("--- POKRAČUJI ---")
 
-            # Pokud je pauza, přeskočíme zbytek smyčky
             if paused:
                 continue
 
@@ -88,12 +83,9 @@ def main():
             success, frame = cap.read()
             if not success:
                 print("Konec videa.")
-                # Pokud chceš video ve smyčce, odkomentuj tyto dva řádky:
-                # cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                # continue
                 break
 
-            # 1. Získání dat z videa (převod barev pro umělou inteligenci)
+            # 1. Získání dat z videa
             image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image_rgb.flags.writeable = False
             results = pose.process(image_rgb)
@@ -101,7 +93,6 @@ def main():
             # Zpět na barvy pro lidské oko
             image_bgr = frame
 
-            # Aktuální čas ve videu (v sekundách)
             video_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
             runner_x = 0
 
@@ -109,31 +100,30 @@ def main():
             if results.pose_landmarks:
                 landmarks = results.pose_landmarks.landmark
 
-                # Najdeme střed těla (průměr mezi levou a pravou kyčlí)
-                hip_left = landmarks[23]
-                hip_right = landmarks[24]
+                # ---  Měříme podle hrudníku (střed ramen) ---
+                # Landmark 11 = Levé rameno, Landmark 12 = Pravé rameno
+                shoulder_left = landmarks[11]
+                shoulder_right = landmarks[12]
 
-                # Převedeme pozici z procent na pixely
-                runner_x = int(((hip_left.x + hip_right.x) / 2) * width)
-                runner_y = int(((hip_left.y + hip_right.y) / 2) * height)
+                # Průměr X a Y souřadnic ramen = střed horní části hrudníku
+                runner_x = int(((shoulder_left.x + shoulder_right.x) / 2) * width)
+                runner_y = int(((shoulder_left.y + shoulder_right.y) / 2) * height)
 
                 # --- LOGIKA MĚŘENÍ (BĚH ZPRAVA -> DOLEVA) ---
                 if not finished:
-                    # START: Pokud běžec překročil startovní čáru (jde do menších čísel)
+                    # START
                     if not is_running:
-                        # Kontrola: je už za startem, ale ještě před cílem?
                         if runner_x <= START_LINE_X and runner_x > FINISH_LINE_X:
                             is_running = True
                             start_time = video_time
                             print(f"--> START v čase {video_time:.2f} s")
 
-                    # CÍL: Pokud běžec překročil cílovou čáru
+                    # CÍL
                     elif is_running and runner_x <= FINISH_LINE_X:
                         is_running = False
                         finished = True
                         end_time = video_time
 
-                        # Výpočet výsledků
                         final_time = end_time - start_time
                         if final_time > 0:
                             speed_ms = REAL_DISTANCE_METERS / final_time
@@ -141,10 +131,8 @@ def main():
                         print(f"--> CÍL! Čas: {final_time:.2f} s, Rychlost: {speed_kmh:.1f} km/h")
 
                 # --- KRESLENÍ KOSTRY ---
-                # Spojnice (kosti)
                 for connection in mp_pose.POSE_CONNECTIONS:
                     start_idx, end_idx = connection
-                    # Nekreslíme hlavu a prsty
                     if start_idx in ignored_body_parts or end_idx in ignored_body_parts:
                         continue
 
@@ -156,43 +144,35 @@ def main():
 
                     cv2.line(image_bgr, (x1, y1), (x2, y2), (0, 255, 0), 4, cv2.LINE_AA)
 
-                # Tečka na těžišti (kyčle)
-                cv2.circle(image_bgr, (runner_x, runner_y), 15, (255, 0, 255), -1)
+                # Tečka na hrudníku (naše měřící čidlo)
+                cv2.circle(image_bgr, (runner_x, runner_y), 10, (255, 0, 255), -1)
 
-            # --- KRESLENÍ GRAFIKY DO OBRAZU ---
-
-            # Startovní čára (Zelená)
+            # --- KRESLENÍ GRAFIKY ---
+            # Start
             cv2.line(image_bgr, (START_LINE_X, 0), (START_LINE_X, height), (0, 255, 0), 3)
             cv2.putText(image_bgr, "START", (START_LINE_X - 120, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 3)
 
-            # Cílová čára (Červená)
+            # Cíl
             cv2.line(image_bgr, (FINISH_LINE_X, 0), (FINISH_LINE_X, height), (0, 0, 255), 3)
             cv2.putText(image_bgr, "CIL", (FINISH_LINE_X - 80, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
 
-            # Informační tabule (Černý obdélník dole)
+            # Info box
             box_center_x = width // 2
-            cv2.rectangle(image_bgr, (box_center_x - 200, height - 200), (box_center_x + 220, height - 30), (0, 0, 0),
-                          -1)
+            cv2.rectangle(image_bgr, (box_center_x - 200, height - 200), (box_center_x + 260, height - 30), (0, 0, 0), -1)
 
             text_pos_time = (box_center_x - 180, height - 120)
             text_pos_speed = (box_center_x - 180, height - 60)
 
             if is_running:
-                # Běží čas
                 elapsed = video_time - start_time
-                cv2.putText(image_bgr, f"Cas: {elapsed:.2f} s", text_pos_time, cv2.FONT_HERSHEY_SIMPLEX, 2,
-                            (255, 255, 255), 4)
+                cv2.putText(image_bgr, f"Cas: {elapsed:.2f} s", text_pos_time, cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4)
             elif finished:
-                # Výsledek
-                cv2.putText(image_bgr, f"FINAL: {final_time:.2f} s", text_pos_time, cv2.FONT_HERSHEY_SIMPLEX, 2,
-                            (0, 255, 0), 4)
-                cv2.putText(image_bgr, f"{speed_kmh:.1f} km/h", text_pos_speed, cv2.FONT_HERSHEY_SIMPLEX, 1.5,
-                            (0, 255, 255), 3)
+                cv2.putText(image_bgr, f"FINAL: {final_time:.2f} s", text_pos_time, cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 4)
+                cv2.putText(image_bgr, f"{speed_kmh:.1f} km/h", text_pos_speed, cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 255), 3)
             else:
-                # Čekání
                 cv2.putText(image_bgr, "Pripraven...", text_pos_time, cv2.FONT_HERSHEY_SIMPLEX, 1.5, (200, 200, 200), 3)
 
-            # Zobrazení na monitoru
+            # Zobrazení
             display_frame = cv2.resize(image_bgr, (1280, 720))
             cv2.imshow("SportVision - Analyza", display_frame)
 
