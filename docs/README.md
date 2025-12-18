@@ -11,7 +11,7 @@ Jednoduše a rychle **změřit rychlost běžce** mezi dvěma body pomocí videa
 Budoucím rozšířením může být **detekce kloubních úhlů** (např. dorsiflexe kotníku).
 
 Projekt je navržen tak, aby:
-- šel spustit na běžném notebooku
+- šel spustit na běžném notebooku/počítači
 - nevyžadoval velké množství výpočetního výkonu
 - byl použitelný i pro trenéry/atlety
 
@@ -35,15 +35,12 @@ Projekt je navržen tak, aby:
 - **Python: verze 3.9 - 3.12**, testoval jsem s 3.10
 - **OpenCV** — práce s videem
 - **MediaPipe Pose** — Robustní model pro detekci kloubů běžce.
-- **NumPy** — Výpočty souřadnic.
 
 ---
 
 ## Aktuální stav projektu
 - **Implementováno měření rychlosti:**
-  - Program úspěšně měří čas v definovaném úseku (sample video je 10m).
-- **Vyřešena kalibrace:**
-  - Vytvořen skript pro manuální zadání souřadnic startu a cíle z videa.
+  - Program úspěšně měří čas a průměrnou rychlost v definovaném úseku (sample video je 10m).
 - **Optimalizace výkonu:**
   - Možnost přepínání `model_complexity` (1 pro rychlost / 2 pro přesnost).
   - Vyloučení landmarků hlavy a prstů pro čistší vizuál.
@@ -69,5 +66,5 @@ https://www.amd.com/en/products/development-tools/kria/kv260
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 **Filip Hřivňacký**
